@@ -1,0 +1,10 @@
+LabID: 42350
+Date Collected: 9/1/15
+ConcVol: 1000 mL
+Station: 40
+Tow Length: 3.4 m 
+LabID: 416
+Scope Analyst: ADS
+Scope Analysis Date: 12/23/15
+Flowcam Analyst: Alex Taylor
+Flowcan Analysis Date: 1/31/17
