@@ -2,9 +2,6 @@ import cv2
 import sys
 import numpy as np
 
-#print file name
-#print (str(sys.argv[1]))
-
 #open file specified
 fp = open(str(sys.argv[1]), "r")
 
@@ -14,8 +11,6 @@ fp.close()
 
 num_field = lines[1].split("|")
 num_field = int(num_field[1])
-
-#print (num_field)
 
 for x in range(2, num_field+2):
 	if lines[x] == "id|int32\n":
@@ -55,6 +50,5 @@ for x in range(66, len(lines)):
 	crop_img = "".join( ["extracted_images/",des[id_index], ".tif"])
 	cv2.imwrite(crop_img, roi)
 #	cv2.imshow("Image", roi)
-
 #	cv2.waitKey(0)
 
