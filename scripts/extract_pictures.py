@@ -1,4 +1,5 @@
 import cv2
+import os
 import sys
 import numpy as np
 from bidict import bidict as bd
@@ -13,9 +14,9 @@ fp_cla = open(str(sys.argv[2]), "r")
 lines_cla = fp_cla.readlines()
 fp_cla.close()
 
-bd_algae_to_index = bd()
+algae_index_map = {}
 algae_name_counter = 4
-while(algae_name_counter < 22): #len(lines_cla)):
+while(algae_name_counter < len(lines_cla)):
 #	print("algae_name_counter " + str(algae_name_counter))
 	algae_type = lines_cla[algae_name_counter].replace("\n", "")
 #	print ("algae_type " + algae_type)
@@ -26,18 +27,16 @@ while(algae_name_counter < 22): #len(lines_cla)):
 	ind = []
 	for x in range(0, int(num_algae)):
 		ind.append(lines_cla[algae_name_counter+4+x].replace("\n", ""))
-	print(ind)
+#	print(ind)
 
 	#create bidict of algae_type and list of indexes
-	bd_algae_to_index.put(algae_type, ind)		
-
+	algae_index_map[algae_type] = ind
 
 	#increase counter to go through loop
 	algae_name_counter += int(num_algae)+4
 #	print ("algae_name_counter " + str(algae_name_counter))
 
-'''
-#create a bidict on the name of algae and its corresponding indecies
+print(algae_index_map)
 
 num_field = lines_lst[1].split("|")
 num_field = int(num_field[1])
@@ -63,14 +62,28 @@ for x in range(2, num_field+2):
 		filename_index = x-2
 	#	print ("filename_index = " + str(filename_index))
 
+#current working directory
+cwd = os.getcwd()
+
+path_data = "".join([cwd, "/../data/416_Station40_09012015_10x/"])
+#print(path_data)
+#os.chdir(path_data)
+#print(os.getcwd())
+path_extracted_images = ""
+if not os.path.exists("".join([path_data, "extracted_images"])):
+	os.makedirs("".join([path_data, "extracted_images"]))
+	path_extracted_images += ("".join([path_data, "extracted_images/"]))
+#	print(path_extracted_images)
+#print(path_extracted_images)
 
 
 #image parsing start at line 66 of file 
-for x in range(66,len(lines_lst)):
+for x in range(66, len(lines_lst)):
 	des = lines_lst[x].split("|")
-
+#	print(des)
 	#retrieve images from the data folder above this directory
-	src = cv2.imread("".join(["../data/416_Station40_09012015_10x/",des[filename_index]]))
+	src = cv2.imread("".join([path_data,des[filename_index]]))
+#	print("".join([path_data, des[filename_index]]))
 
 	x_st = int(des[x_index])
 	x_end = int(des[w_index]) + x_st	
@@ -80,8 +93,27 @@ for x in range(66,len(lines_lst)):
 	#select the ROI based on X, Y value and width and height
 	roi = src[y_st:y_end, x_st:x_end]
 
+	counter = 0
+	#create specific folders for each type of algae in extracted_images folder
+	for x in range (0, len(list(algae_index_map.values()))):
+		ids = list(list(algae_index_map.values())[counter])
+		for y in range(0, len(ids)):
+			if des[id_index] in ids:
+				break
+		else:
+			counter += 1
+			continue
+		break
+			
+#	print (counter)	
+	algae_name = list(algae_index_map.keys())[counter]
+	path_algae = "".join([path_extracted_images, algae_name, "/"])
+	print(path_algae)
+	if not os.path.exists(path_algae):
+		os.makedirs(path_algae)
+	
 	# store in extracted_images folder in current directory
-	crop_img = "".join( ["extracted_images/",des[id_index], ".tif"])
+	crop_img = "".join( [path_algae, des[id_index], ".tif"])
 	cv2.imwrite(crop_img, roi)
 #	cv2.waitKey(0)
-'''
+
