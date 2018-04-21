@@ -27,7 +27,7 @@ num_classes = len(classes)
 
 # 20% of the data will automatically be used for validation
 validation_size = 0.2
-img_size = 64
+img_size = 128
 num_channels = 3
 os.chdir('..')
 train_path=os.getcwd()
