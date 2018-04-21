@@ -26,7 +26,7 @@ classes = ['Asterionella','Aulocoseira','Colonial Cyanobacteria','Cryptomonas','
 num_classes = len(classes)
 
 # 20% of the data will automatically be used for validation
-validation_size = 0.2
+validation_size = 0.15
 img_size = 128
 num_channels = 3
 os.chdir('..')
