@@ -15,7 +15,7 @@ def load_train(train_path, image_size, classes):
     for fields in classes:
         index = classes.index(fields)
         print('Now going to read {} files (Index: {})'.format(fields, index))
-        path = os.path.join(train_path, fields, '*g')
+        path = os.path.join(train_path, fields,"*.tif")
         files = glob.glob(path)
         for fl in files:
             image = cv2.imread(fl)
