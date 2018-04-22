@@ -179,6 +179,7 @@ def show_progress(epoch, feed_dict_train, feed_dict_validate, val_loss):
     msg = "Training Epoch {0} --- Training Accuracy: {1:>6.1%}, Validation Accuracy: {2:>6.1%},  Validation Loss: {3:.3f}"
     log = open(trial_name,"a")
     log.write(msg.format(epoch + 1, acc, val_acc, val_loss))
+    log.write("\n")
     log.close()
     print(msg.format(epoch + 1, acc, val_acc, val_loss))
 
