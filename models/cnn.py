@@ -27,6 +27,7 @@ images = np.multiply(images, 1.0/255.0)
 #The input to the network is of shape [None image_size image_size num_channels]. Hence we reshape.
 x_batch = images.reshape(1, image_size,image_size,num_channels)
 
+print(x_batch)
 ## Let us restore the saved model
 sess = tf.Session()
 # Step-1: Recreate the network graph. At this step only graph is created.

@@ -18,7 +18,7 @@ seed(1)
 from tensorflow import set_random_seed
 set_random_seed(2)
 
-
+trial_name = "pc_no_unidentified.txt"
 batch_size = 32
 
 #Prepare input data
@@ -177,7 +177,11 @@ def show_progress(epoch, feed_dict_train, feed_dict_validate, val_loss):
     acc = session.run(accuracy, feed_dict=feed_dict_train)
     val_acc = session.run(accuracy, feed_dict=feed_dict_validate)
     msg = "Training Epoch {0} --- Training Accuracy: {1:>6.1%}, Validation Accuracy: {2:>6.1%},  Validation Loss: {3:.3f}"
+    file log = open(trial_name,"a")
+    log.write(msg.format(epoch + 1, acc, val_acc, val_loss))
+    log.close()
     print(msg.format(epoch + 1, acc, val_acc, val_loss))
+
 
 total_iterations = 0
 
