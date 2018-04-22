@@ -5,9 +5,14 @@ import sys,argparse
 
 
 # First, pass the path of the image
+os.chdir('../data/test/')
 dir_path = os.path.dirname(os.path.realpath(__file__))
-image_path=sys.argv[1]
+if(len(sys.argv) >1):
+    image_path = sys.argv[1]
+else:
+    image_path = "Aulocoseira-28.tif"
 filename = dir_path +'/' +image_path
+os.chdir('../../')
 image_size=128
 num_channels=3
 images = []
@@ -25,7 +30,7 @@ x_batch = images.reshape(1, image_size,image_size,num_channels)
 ## Let us restore the saved model
 sess = tf.Session()
 # Step-1: Recreate the network graph. At this step only graph is created.
-saver = tf.train.import_meta_graph('../phytoplankton-model.meta')
+saver = tf.train.import_meta_graph('./phytoplankton-model.meta')
 # Step-2: Now let's load the weights saved using the restore method.
 saver.restore(sess, tf.train.latest_checkpoint('./'))
 
