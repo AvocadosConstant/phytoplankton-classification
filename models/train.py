@@ -22,11 +22,11 @@ set_random_seed(2)
 batch_size = 32
 
 #Prepare input data
-classes = ['Asterionella','Aulocoseira','Colonial Cyanobacteria','Cryptomonas','Detritus','Dolichospermum','Filamentous cyanobacteria','Romeria','Staurastrum','Unidentified']
+classes = ['Asterionella','Aulocoseira','Colonial Cyanobacteria','Cryptomonas','Detritus','Dolichospermum','Filamentous cyanobacteria','Romeria','Staurastrum']
 num_classes = len(classes)
 
 # 20% of the data will automatically be used for validation
-validation_size = 0.15
+validation_size = 0.20
 img_size = 128
 num_channels = 3
 os.chdir('..')
