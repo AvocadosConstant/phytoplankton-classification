@@ -16,7 +16,7 @@ import numpy as np
 from numpy.random import seed
 seed(1)
 from tensorflow import set_random_seed
-set_random_seed(2)
+set_random_seed(3)
 
 trial_name = "pc_no_unidentified.txt"
 batch_size = 32
