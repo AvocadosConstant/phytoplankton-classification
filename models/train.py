@@ -18,7 +18,7 @@ seed(1)
 from tensorflow import set_random_seed
 set_random_seed(3)
 
-trial_name = "pc_no_unidentified.txt"
+trial_name = "pc_no_unidentified_rs_3.txt"
 batch_size = 32
 
 #Prepare input data
