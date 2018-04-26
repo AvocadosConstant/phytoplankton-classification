@@ -17,26 +17,20 @@ fp_cla.close()
 algae_index_map = {}
 algae_name_counter = 4
 while(algae_name_counter < len(lines_cla)):
-#	print("algae_name_counter " + str(algae_name_counter))
 	algae_type = lines_cla[algae_name_counter].replace("\n", "")
-#	print ("algae_type " + algae_type)
 	num_algae = lines_cla[algae_name_counter+3].replace("\n", "")
-#	print ("num_algae " + num_algae)
 	
 	#create list of indexes associated with particular algae_type
 	ind = []
 	for x in range(0, int(num_algae)):
 		ind.append(lines_cla[algae_name_counter+4+x].replace("\n", ""))
-#	print(ind)
 
 	#create bidict of algae_type and list of indexes
 	algae_index_map[algae_type] = ind
 
 	#increase counter to go through loop
 	algae_name_counter += int(num_algae)+4
-#	print ("algae_name_counter " + str(algae_name_counter))
 
-print(algae_index_map)
 
 num_field = lines_lst[1].split("|")
 num_field = int(num_field[1])
@@ -66,24 +60,16 @@ for x in range(2, num_field+2):
 cwd = os.getcwd()
 
 path_data = "".join([cwd, "/../data/416_Station40_09012015_10x/"])
-#print(path_data)
-#os.chdir(path_data)
-#print(os.getcwd())
 path_extracted_images = ""
 if not os.path.exists("".join([path_data, "extracted_images"])):
 	os.makedirs("".join([path_data, "extracted_images"]))
 	path_extracted_images += ("".join([path_data, "extracted_images/"]))
-#	print(path_extracted_images)
-#print(path_extracted_images)
-
 
 #image parsing start at line 66 of file 
 for x in range(66, len(lines_lst)):
 	des = lines_lst[x].split("|")
-#	print(des)
 	#retrieve images from the data folder above this directory
 	src = cv2.imread("".join([path_data,des[filename_index]]))
-#	print("".join([path_data, des[filename_index]]))
 
 	x_st = int(des[x_index])
 	x_end = int(des[w_index]) + x_st	
@@ -105,10 +91,8 @@ for x in range(66, len(lines_lst)):
 			continue
 		break
 			
-#	print (counter)	
 	algae_name = list(algae_index_map.keys())[counter]
 	path_algae = "".join([path_extracted_images, algae_name, "/"])
-	print(path_algae)
 	if not os.path.exists(path_algae):
 		os.makedirs(path_algae)
 	
