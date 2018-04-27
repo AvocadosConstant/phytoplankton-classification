@@ -175,13 +175,14 @@ vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='conv1')
 tf.get_variable_scope().reuse_variables()
     # print(tf.trainable_variables())
 weights = vars[0]
+
 #TO-DO: Normalize by channel and image
 #x_min = tf.reduce_min(weights)
 #x_max = tf.reduce_max(weights)
 #weights_0_to_1 = (weights - x_min) / (x_max - x_min)
 #weights_0_to_255_uint8 = tf.image.convert_image_dtype (weights_0_to_1, dtype=tf.uint8)
 weights_transposed = tf.transpose (weights, [3, 0, 1, 2])
-
+print(weights)
 summary_writer = tf.summary.FileWriter('summary_dir');
 summary_writer.add_graph(graph=tf.get_default_graph())
 session.run(tf.global_variables_initializer())
@@ -212,7 +213,8 @@ def train(num_iteration):
         x_batch, y_true_batch, _, cls_batch = data.train.next_batch(batch_size)
         x_valid_batch, y_valid_batch, _, valid_cls_batch = data.valid.next_batch(batch_size)
 
-
+        print(x_batch)
+        print(y_true_batch)
         feed_dict_tr = {x: x_batch,
                            y_true: y_true_batch}
         feed_dict_val = {x: x_valid_batch,
@@ -221,7 +223,7 @@ def train(num_iteration):
         session.run(optimizer, feed_dict=feed_dict_tr)
 
         if i % int(data.train.num_examples/batch_size) == 0:
-            summary = tf.summary.image('conv1/filters', weights_transposed,max_outputs=32)
+            summary = tf.summary.image('conv1/filters', weights_transposed,max_outputs=1)
             val_loss,img = session.run([cost,summary], feed_dict=feed_dict_val)
             epoch = int(i / int(data.train.num_examples/batch_size))
             print (vars[0])
@@ -235,4 +237,4 @@ def train(num_iteration):
 
     total_iterations += num_iteration
 
-train(num_iteration=5000)
+train(num_iteration=100)
