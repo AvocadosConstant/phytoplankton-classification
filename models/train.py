@@ -27,7 +27,7 @@ num_classes = len(classes)
 
 # 20% of the data will automatically be used for validation
 validation_size = 0.20
-img_size = 128
+img_size = 256
 num_channels = 3
 os.chdir('..')
 train_path=os.getcwd()
@@ -74,10 +74,11 @@ def create_biases(size):
 def create_convolutional_layer(input,
                num_input_channels,
                conv_filter_size,
-               num_filters):
-
+               num_filters, name):
+    shape=[conv_filter_size, conv_filter_size, num_input_channels, num_filters]
     ## We shall define the weights that will be trained using create_weights function.
-    weights = create_weights(shape=[conv_filter_size, conv_filter_size, num_input_channels, num_filters])
+    with tf.name_scope(name):
+        weights = tf.Variable(tf.truncated_normal(shape, stddev=0.05,name="_kernel"))
     ## We create biases using the create_biases function. These are also trained.
     biases = create_biases(num_filters)
 
@@ -85,8 +86,8 @@ def create_convolutional_layer(input,
     layer = tf.nn.conv2d(input=input,
                      filter=weights,
                      strides=[1, 1, 1, 1],
-                     padding='SAME')
-
+                     padding='SAME',name = name)
+    print(layer)
     layer += biases
 
     ## We shall be using max-pooling.
@@ -135,16 +136,16 @@ def create_fc_layer(input,
 layer_conv1 = create_convolutional_layer(input=x,
                num_input_channels=num_channels,
                conv_filter_size=filter_size_conv1,
-               num_filters=num_filters_conv1)
+               num_filters=num_filters_conv1, name = "conv1")
 layer_conv2 = create_convolutional_layer(input=layer_conv1,
                num_input_channels=num_filters_conv1,
                conv_filter_size=filter_size_conv2,
-               num_filters=num_filters_conv2)
+               num_filters=num_filters_conv2, name="conv2")
 
 layer_conv3= create_convolutional_layer(input=layer_conv2,
                num_input_channels=num_filters_conv2,
                conv_filter_size=filter_size_conv3,
-               num_filters=num_filters_conv3)
+               num_filters=num_filters_conv3, name = "conv3")
 
 layer_flat = create_flatten_layer(layer_conv3)
 
@@ -169,8 +170,23 @@ optimizer = tf.train.AdamOptimizer(learning_rate=1e-4).minimize(cost)
 correct_prediction = tf.equal(y_pred_cls, y_true_cls)
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
+vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='conv1')
 
+tf.get_variable_scope().reuse_variables()
+    # print(tf.trainable_variables())
+weights = vars[0]
+#TO-DO: Normalize by channel and image
+#x_min = tf.reduce_min(weights)
+#x_max = tf.reduce_max(weights)
+#weights_0_to_1 = (weights - x_min) / (x_max - x_min)
+#weights_0_to_255_uint8 = tf.image.convert_image_dtype (weights_0_to_1, dtype=tf.uint8)
+weights_transposed = tf.transpose (weights, [3, 0, 1, 2])
+
+summary_writer = tf.summary.FileWriter('summary_dir');
+summary_writer.add_graph(graph=tf.get_default_graph())
 session.run(tf.global_variables_initializer())
+
+
 
 
 def show_progress(epoch, feed_dict_train, feed_dict_validate, val_loss):
@@ -205,9 +221,14 @@ def train(num_iteration):
         session.run(optimizer, feed_dict=feed_dict_tr)
 
         if i % int(data.train.num_examples/batch_size) == 0:
-            val_loss = session.run(cost, feed_dict=feed_dict_val)
+            summary = tf.summary.image('conv1/filters', weights_transposed,max_outputs=32)
+            val_loss,img = session.run([cost,summary], feed_dict=feed_dict_val)
             epoch = int(i / int(data.train.num_examples/batch_size))
+            print (vars[0])
 
+            # summary = tf.summary.tensor_summary(name="conv1/filters", tensor = tens_summary, summary_description = "filter images")
+            # print(summary)
+            summary_writer.add_summary(img, global_step=i)
             show_progress(epoch, feed_dict_tr, feed_dict_val, val_loss)
             saver.save(session, './phytoplankton-model')
 
