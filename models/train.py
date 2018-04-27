@@ -220,7 +220,7 @@ def train(num_iteration):
         session.run(optimizer, feed_dict=feed_dict_tr)
 
         if i % int(data.train.num_examples/batch_size) == 0:
-            summary = tf.summary.image('conv1/filters', weights_transposed,max_outputs=1)
+            summary = tf.summary.image('conv1/filters', weights_transposed,max_outputs=32)
             val_loss,img = session.run([cost,summary], feed_dict=feed_dict_val)
             epoch = int(i / int(data.train.num_examples/batch_size))
             print (vars[0])
@@ -234,4 +234,4 @@ def train(num_iteration):
 
     total_iterations += num_iteration
 
-train(num_iteration=19600)
+train(num_iteration=1960)
