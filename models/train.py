@@ -61,7 +61,7 @@ num_filters_conv2 = 32
 filter_size_conv3 = 3
 num_filters_conv3 = 64
 
-fc_layer_size = 8192
+fc_layer_size = 128
 
 def create_weights(shape):
     return tf.Variable(tf.truncated_normal(shape, stddev=0.05))
@@ -182,13 +182,12 @@ weights = vars[0]
 #weights_0_to_1 = (weights - x_min) / (x_max - x_min)
 #weights_0_to_255_uint8 = tf.image.convert_image_dtype (weights_0_to_1, dtype=tf.uint8)
 weights_transposed = tf.transpose (weights, [3, 0, 1, 2])
-summary = tf.summary.image('conv1/filters', weights_transposed,max_outputs=32)
-summary_writer = tf.summary.FileWriter('summary_dir');
-summary_writer.add_graph(graph=tf.get_default_graph())
+#print(weights)
+#?summary_writer = tf.summary.FileWriter('summary_dir');
+#summary_writer.add_graph(graph=tf.get_default_graph())
 session.run(tf.global_variables_initializer())
 
 def show_progress(epoch, feed_dict_train, feed_dict_validate, val_loss):
-
     acc = session.run(accuracy, feed_dict=feed_dict_train)
     val_acc = session.run(accuracy, feed_dict=feed_dict_validate)
     msg = "Training Epoch {0} --- Training Accuracy: {1:>6.1%}, Validation Accuracy: {2:>6.1%},  Validation Loss: {3:.3f}"
@@ -217,8 +216,12 @@ def train(num_iteration):
 
         session.run(optimizer, feed_dict=feed_dict_tr)
         if i % int(data.train.num_examples/batch_size) == 0:
-            val_loss = session.run([cost], feed_dict=feed_dict_val)
+            val_loss= session.run(cost, feed_dict=feed_dict_val)
             epoch = int(i / int(data.train.num_examples/batch_size))
+            #print (vars[0])
+            # summary = tf.summary.tensor_summary(name="conv1/filters", tensor = tens_summary, summary_description = "filter images")
+            # print(summary)
+            #summary_writer.add_summary(img, global_step=i)
             show_progress(epoch, feed_dict_tr, feed_dict_val, val_loss)
             saver.save(session, './phytoplankton-model')
     total_iterations += num_iteration
