@@ -49,7 +49,7 @@ x = tf.placeholder(tf.float32, shape=[None, img_size,img_size,num_channels], nam
 y_true = tf.placeholder(tf.float32, shape=[None, num_classes], name='y_true')
 y_true_cls = tf.argmax(y_true, dimension=1)
 
-
+keep_prob = tf.placeholder(tf.float32,name='keep_prob')
 
 ##Network graph params
 filter_size_conv1 = 7
@@ -129,7 +129,6 @@ def create_fc_layer(input,
     layer = tf.matmul(input, weights) + biases
     if use_relu:
         layer = tf.nn.relu(layer)
-
     return layer
 
 
@@ -153,8 +152,16 @@ layer_fc1 = create_fc_layer(input=layer_flat,
                      num_inputs=layer_flat.get_shape()[1:4].num_elements(),
                      num_outputs=fc_layer_size,
                      use_relu=True)
+# session.run(tf.global_variables_initializer())
+print(layer_fc1)
 
-layer_fc2 = create_fc_layer(input=layer_fc1,
+print(keep_prob)
+dropout = tf.nn.dropout(x=layer_fc1,
+    keep_prob=keep_prob,
+    noise_shape=None,
+    seed=3,
+    name='dropout')
+layer_fc2 = create_fc_layer(input=dropout,
                      num_inputs=fc_layer_size,
                      num_outputs=num_classes,
                      use_relu=False)
@@ -210,9 +217,11 @@ def train(num_iteration):
         x_batch, y_true_batch, _, cls_batch = data.train.next_batch(batch_size)
         x_valid_batch, y_valid_batch, _, valid_cls_batch = data.valid.next_batch(batch_size)
         feed_dict_tr = {x: x_batch,
-                           y_true: y_true_batch}
+                           y_true: y_true_batch,
+                           keep_prob:0.5}
         feed_dict_val = {x: x_valid_batch,
-                              y_true: y_valid_batch}
+                              y_true: y_valid_batch,
+                              keep_prob:1}
 
         session.run(optimizer, feed_dict=feed_dict_tr)
         if i % int(data.train.num_examples/batch_size) == 0:
