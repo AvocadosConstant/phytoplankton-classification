@@ -62,7 +62,7 @@ for x in range(2, num_field+2):
 		filename_index = x-2
 	#	print ("filename_index = " + str(filename_index))
 
-#current working directory
+current working directory
 cwd = os.getcwd()
 
 path_data = "".join([cwd, "/../data/416_Station40_09012015_10x/"])

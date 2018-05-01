@@ -61,7 +61,7 @@ num_filters_conv2 = 32
 filter_size_conv3 = 3
 num_filters_conv3 = 64
 
-fc_layer_size = 128
+fc_layer_size = 2048
 
 def create_weights(shape):
     return tf.Variable(tf.truncated_normal(shape, stddev=0.05))
@@ -232,6 +232,6 @@ def train(num_iteration):
             # print(summary)
             #summary_writer.add_summary(img, global_step=i)
             show_progress(epoch, feed_dict_tr, feed_dict_val, val_loss)
-            saver.save(session, './phytoplankton-model')
+            saver.save(session, '/data/szaman5/cnn-save/phytoplankton-model')
     total_iterations += num_iteration
 train(num_iteration=1960)
