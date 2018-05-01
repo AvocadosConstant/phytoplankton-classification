@@ -17,10 +17,12 @@ from numpy.random import seed
 seed(1)
 from tensorflow import set_random_seed
 set_random_seed(3)
-
-trial_name = "pc_no_unidentified_rs_3.txt"
+from time import time
+import datetime
+st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 batch_size = 32
-
+start_time = time()
+trial_name = "pc_no_unidentified_rs_3"+st+".txt"
 #Prepare input data
 classes = ['Asterionella','Aulocoseira','Colonial Cyanobacteria','Cryptomonas','Detritus','Dolichospermum','Filamentous cyanobacteria','Romeria','Staurastrum']
 num_classes = len(classes)
@@ -197,17 +199,18 @@ session.run(tf.global_variables_initializer())
 def show_progress(epoch, feed_dict_train, feed_dict_validate, val_loss):
     acc = session.run(accuracy, feed_dict=feed_dict_train)
     val_acc = session.run(accuracy, feed_dict=feed_dict_validate)
-    msg = "Training Epoch {0} --- Training Accuracy: {1:>6.1%}, Validation Accuracy: {2:>6.1%},  Validation Loss: {3:.3f}"
+    msg = "Training Epoch {0} --- Training Accuracy: {1:>6.1%}, Validation Accuracy: {2:>6.1%},  Validation Loss: {3:.3f}, Elapsed Time:{4:.4f}"
     log = open(trial_name,"a")
-    log.write(msg.format(epoch + 1, acc, val_acc, val_loss))
+    log.write(msg.format(epoch + 1, acc, val_acc, val_loss,(time() - start_time)))
     log.write("\n")
     log.close()
-    print(msg.format(epoch + 1, acc, val_acc, val_loss))
+    print(msg.format(epoch + 1, acc, val_acc, val_loss,(time() - start_time)))
 
 
 total_iterations = 0
 
 saver = tf.train.Saver()
+
 def train(num_iteration):
     global total_iterations
 
