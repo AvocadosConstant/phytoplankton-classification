@@ -19,7 +19,7 @@ from tensorflow import set_random_seed
 set_random_seed(3)
 from time import time
 import datetime
-st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+st = datetime.datetime.fromtimestamp(time()).strftime('%Y-%m-%d %H:%M:%S')
 batch_size = 32
 start_time = time()
 trial_name = "pc_no_unidentified_rs_3"+st+".txt"
@@ -147,7 +147,7 @@ layer_conv3= create_convolutional_layer(input=layer_conv2,
                num_input_channels=num_filters_conv2,
                conv_filter_size=filter_size_conv3,
                num_filters=num_filters_conv3, name = "conv3")
-
+print(layer_conv3)
 layer_flat = create_flatten_layer(layer_conv3)
 
 layer_fc1 = create_fc_layer(input=layer_flat,
