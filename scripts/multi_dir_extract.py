@@ -8,7 +8,7 @@ from bidict import bidict as bd
 def get_directories(data_path):
     directories = glob.glob(data_path)
     return directories
-def extractor(cla_path, lst_path,output_dir, input_dir):
+def extractor(cla_path, lst_path,output_dir, input_dir,stat_name):
 	#open lst file specified
 	# fp_lst = open(str(sys.argv[1]), "r")
     fp_lst = open(lst_path,"r")
@@ -22,6 +22,7 @@ def extractor(cla_path, lst_path,output_dir, input_dir):
     fp_cla.close()
     algae_index_map = {}
     algae_name_counter = 4
+    print(input_dir)
     while(algae_name_counter < len(lines_cla)):
 	#	print("algae_name_counter " + str(algae_name_counter))
         algae_type = lines_cla[algae_name_counter].replace("\n", "")
@@ -31,6 +32,7 @@ def extractor(cla_path, lst_path,output_dir, input_dir):
 
 		#create list of indexes associated with particular algae_type
         ind = []
+        print(algae_type)
         for x in range(0, int(num_algae)):
             ind.append(lines_cla[algae_name_counter+4+x].replace("\n", ""))
 	#	print(ind)
@@ -118,30 +120,34 @@ def extractor(cla_path, lst_path,output_dir, input_dir):
 	#	print (counter)
         algae_name = list(algae_index_map.keys())[counter]
         path_algae = "".join([path_extracted_images, algae_name, "/"])
-        print(path_algae)
+        #print(path_algae)
         if not os.path.exists(path_algae):
             os.makedirs(path_algae)
 
 		# store in extracted_images folder in current directory
-        crop_img = "".join( [path_algae, des[id_index], ".tif"])
+        crop_img = "".join( [path_algae, des[id_index], stat_name,".tif"])
+        print(crop_img)
         #cv2.imwrite(crop_img, roi)
 	#	cv2.waitKey(0)
 
 def main():
-    os.chdir('..')
+    os.chdir('/data/szaman5/')
     current = os.getcwd()
-    path = os.path.join(current,"data/Multi_Directory_Extraction/*/")
+    path = os.path.join(current,"training_data/*/")
+    #path = "/data/szaman5/training_data/"
     directories = get_directories(path)
-    output_dir = os.path.join(current,"data/training_data")
+    output_dir = os.path.join(path,"image_data")
     print(output_dir)
-    for directory_paths in directories:
+    print(directories[2:-1])
+    for directory_paths in directories[220:-1]:
         station_name = directory_paths.split("/")[-2]
-        if(station_name[-2] == '0'):
+        #print(station_name)
+        if(station_name != '*'and station_name[-2] == '0'):
             lst_path = directory_paths+station_name+".lst"
             cla_path = directory_paths+station_name+".cla"
             print(lst_path)
             print(cla_path)
-            extractor(cla_path,lst_path, output_dir,directory_paths)
+            extractor(cla_path,lst_path, output_dir,directory_paths,station_name)
 
 
 main()
